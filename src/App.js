@@ -1,33 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { MdDeleteForever, MdAdd, MdSave, MdClear, MdEdit } from "react-icons/md"
+import { MdAdd } from "react-icons/md"
 import {
   ChakraProvider,
   Box,
   Text,
   theme,
-  TableContainer,
-  Table,
-  TableCaption,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  FormControl,
   Stack,
-  FormLabel,
-  Input,
   Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
   useDisclosure,
   VStack,
 } from '@chakra-ui/react';
+import TableProdutos from './components/TableProdutos';
+import ModalAddProdutos from './components/ModalAddProdutos';
 
 const baseURL = 'http://localhost:3000/products';
 
@@ -102,7 +86,7 @@ const App = () => {
     setIsUpdate(false);
     onClose();
   };
-  
+
   const handleSaveProduto = async () => {
     if (!isUpdate) {
       handleAddProduto();
@@ -125,66 +109,30 @@ const App = () => {
             Lista de produtos
           </Text>
           <Stack w={'sm'}>
-            <Button width={'7rem'} colorScheme='green' size={'sm'} onClick={handleGetAddProduto}><MdAdd /> Produto</Button>
-
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Adicionar produto</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <FormControl>
-                    <FormLabel htmlFor='descricao'>Descrição:</FormLabel>
-                    <Input id='descricao' type='descricao' onChange={(e) => setDescricao(e.target.value)} value={descricao} />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel htmlFor='preco'>Preço:</FormLabel>
-                    <Input id='preco' type='preco' onChange={(e) => setPreco(e.target.value)} value={preco} />
-                  </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                  <Button colorScheme='blue' mr={3} onClick={handleSaveProduto}>
-                    <MdSave />
-                  </Button>
-                  <Button colorScheme='red' mr={3} onClick={onClose}>
-                    <MdClear />
-                  </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
+            <Button
+              width={'7rem'}
+              colorScheme='green'
+              size={'sm'}
+              onClick={handleGetAddProduto}>
+              <MdAdd /> Produto
+            </Button>
+            <ModalAddProdutos
+              isOpen={isOpen}
+              descricao={descricao}
+              preco={preco}
+              onClose={onClose}
+              setDescricao={setDescricao}
+              setPreco={setPreco}
+              handleSaveProduto={handleSaveProduto} />
           </Stack>
-          <TableContainer>
-            <Table size={'sm'} variant='striped' colorScheme='gray'>
-              <TableCaption>Produtos</TableCaption>
-              <Thead>
-                <Tr>
-                  <Th>Id</Th>
-                  <Th>Descrição</Th>
-                  <Th>Preço</Th>
-                  <Th></Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {produtos.map(prod =>
-                  <Tr key={prod.id}>
-                    <Td>{prod.id}</Td>
-                    <Td>{prod.nome}</Td>
-                    <Td>{prod.preco}</Td>
-                    <Td>
-                      <Button padding={0} alignItems={'center'} justifyContent={'end'} size={'sm'} leftIcon={<MdEdit />} colorScheme='orange' variant={'ghost'} onClick={() => handleGetEditProduto(prod)}>
-                      </Button>
-                      <Button padding={0} alignItems={'center'} justifyContent={'end'} size={'sm'} leftIcon={<MdDeleteForever />} colorScheme='red' variant={'ghost'} onClick={() => handleDelProduto(prod.id)}>
-                      </Button>
-                    </Td>
-                  </Tr>
-                )}
-              </Tbody>
-            </Table>
-          </TableContainer>
+          <TableProdutos
+            produtos={produtos}
+            handleGetEditProduto={handleGetEditProduto}
+            handleDelProduto={handleDelProduto} />
         </Box>
       </VStack>
     </ChakraProvider>
   );
-}
+};
 
 export default App;
